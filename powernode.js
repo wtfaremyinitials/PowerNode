@@ -1,4 +1,5 @@
-this.https = require('https');
+this.ps          = require('./ps');
+this.https       = require('https');
 this.querystring = require('querystring');
 
 module.exports = function(host) {
@@ -50,7 +51,7 @@ module.exports = function(host) {
 				'pcasServerUrl': '/',
 				'credentialType': 'User Id and Password Credential',
 				'account': username,
-				'pw': psHashPassword(password)
+				'pw': psEncPw(password, authData['contextData'])
 			}
 			
 			post('/guardian/home.html', cookie, querystring.stringify(data), function(body, newCookie) {
@@ -79,7 +80,7 @@ module.exports = function(host) {
 			res.on('end', function() {
 				var cookie = res.headers['Set-Cookie'];
 				if(cookie) {
-					cookie = (cookie + "").split(";").shift()
+					cookie = (cookie + '').split(';').shift()
 				}
 				
 				callback(body, cookie);
@@ -106,7 +107,7 @@ module.exports = function(host) {
 			res.on('end', function() {
 				var cookie = res.headers['Set-Cookie'];
 				if(cookie) {
-					cookie = (cookie + "").split(";").shift()
+					cookie = (cookie + '').split(';').shift()
 				}
 				
 				callback(body, cookie);
@@ -116,10 +117,9 @@ module.exports = function(host) {
 	
 }  
 
-// TODO Password hash/encrypt thing
-function psHashPassword(pass) {
-	// hmac.new(authdata['contextData'].encode('ascii'), base64.b64encode(hashlib.md5(pw.encode('ascii')).digest()).replace(b"=", b""), hashlib.md5).hexdigest()
-	return pass;
+//  Password hash/encrypt thing
+function psEncPw(pass, pskey) {
+	return ps.hex_hmac_md5(pskey, ps.b64_md5(pass));
 }
 
 function Class() {
