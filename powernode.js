@@ -1,127 +1,115 @@
-this.ps          = require('./ps');
-this.https       = require('https');
-this.querystring = require('querystring');
+// Needed modules
+var https = require('http');
+var querystring = require('querystring');
 
-module.exports = function(host) {
-		
-	this.host = host;
-	this.userAgent = 'powernode/0.0.0 (https://github.com/wtfaremyinitials/powernode)';
-	
-	// User object 
-	this.User = function() {
+// Bring in PowerSchool's hack-y md5 crypto *shudder*
+eval(require('fs').readFileSync('./pscrypto.js')+'');
 
-		var username = '';
-		var password = '';
-		var cookie   = '';
-		
-		var authData = {
-			'pstoken': '',
-			'contextData': ''
-		};	
-		
-		var classes = [];
-		
-		function isLoggedIn() {
-			return session != '';
-		}
+// User agent for all requests
+var userAgent = 'powernode/0.0.0 (https://github.com/wtfaremyinitials/powernode)';
 
-		function auth(username, password) {
-			this.username = username;
-			this.password = password;
-			this.getAuthData();
+// Uses PowerSchool's weird crypto to hash/encrypt the user's password
+function encryptPassword(contextData, password) {
+	return hex_hmac_md5(contextData, b64_md5(password));
+}
+
+function encryptDBPW(contextData, password) {
+	return hex_hmac_md5(contextData, password.toLowerCase());
+}
+
+// Performs a GET request
+function get(hostname, path, callback, cookie) {
+	var options = {
+		host: hostname,
+		path: path,
+		method: 'GET',
+		headers: {
+			'UserAgent': userAgent,
+			'Cookie': (typeof cookie != 'undefined')? (cookie) : ('')
 		}
-		
-		function getAuthData() {
-			get('/public/home.html', cookie, function(body, newCookie) {
-				cookie = newCookie;
-				
-				var pstokenRegex = /.*<input type="hidden" name="pstoken" value="(.*)" \/>.*/ // I hate regex
-				var contextDataRegex = /.*<input type="hidden" name="contextData" value="(.*)" \/>.*/
-				
-				authData['pstoken']     = body.match(pstokenRegex)[1];
-				authData['contextData'] = body.match(contextDataRegex)[1];
-			});
-		}
-		
-		function sendLoginData() {
-			data = {
-				'pstoken': authData['pstoken'],
-				'contextData': authData['contextData'],
-				'serviceName': 'PS Parent Portal', // Is this some kind of magic value? TODO
-				'pcasServerUrl': '/',
-				'credentialType': 'User Id and Password Credential',
-				'account': username,
-				'pw': psEncPw(password, authData['contextData'])
+	}
+
+	https.request(options, function(res){
+		var body = '';
+		res.on('data', function(data){
+			body += data;
+		});
+		res.on('end', function() {
+			var cookie = res.headers['Set-Cookie'];
+			if(cookie) {
+				cookie = (cookie + '').split(';').shift()
 			}
 			
-			post('/guardian/home.html', cookie, querystring.stringify(data), function(body, newCookie) {
-				
-			});
+			return callback(body, cookie);
+		});
+	}).end();
+} 
+
+// Performs a POST request
+function post(hostname, path, data, callback, cookie) {
+	var options = {
+		host: hostname,
+		path: path,
+		method: 'POST',
+		headers: {
+			'UserAgent': userAgent,
+			'Cookie': (typeof cookie != 'undefined')? (cookie) : ('')
 		}
-	
 	}
 	
-	function get(path, cookie, callback) {
-		var options = {
-			host: host,
-			path: path,
-			method: 'GET',
-			headers: {
-				'UserAgent': userAgent,
-				'Cookie': (typeof cookie != 'undefined')? (cookie) : ('')
+	https.request(options, function(res){
+		var body = '';
+		res.on('data', function(data){
+			body += data;
+		});
+		res.on('end', function() {
+			var cookie = res.headers['Set-Cookie'];
+			if(cookie) {
+				cookie = (cookie + '').split(';').shift()
 			}
-		}
-	
-		https.request(options, function(res){
-			var body = '';
-			res.on('data', function(data){
-				body += data;
-			});
-			res.on('end', function() {
-				var cookie = res.headers['Set-Cookie'];
-				if(cookie) {
-					cookie = (cookie + '').split(';').shift()
-				}
-				
-				callback(body, cookie);
-			});
-		}).end();
-	}
-	
-	function post(path, cookie, data, callback) {
-		var options = {
-			host: host,
-			path: path,
-			method: 'POST',
-			headers: {
-				'UserAgent': userAgent,
-				'Cookie': (typeof cookie != 'undefined')? (cookie) : ('')
-			}
-		}
+			
+			return callback(body, cookie);
+		});
+	}).end(data);
+}
+
+// Gets data needed to authenticate a new user
+function getAuthData(hostname, callback) {
+	get(hostname, '/public/home.html', function(body, cookie) {
+		var pstokenRegex = /.*<input type="hidden" name="pstoken" value="(.*)" \/>.*/ // I hate regex
+		var contextDataRegex = /.*<input type="hidden" name="contextData" value="(.*)" \/>.*/
 		
-		https.request(options, function(res){
-			var body = '';
-			res.on('data', function(data){
-				body += data;
-			});
-			res.on('end', function() {
-				var cookie = res.headers['Set-Cookie'];
-				if(cookie) {
-					cookie = (cookie + '').split(';').shift()
-				}
-				
-				callback(body, cookie);
-			});
-		}).write(data).end();
-	}
-	
-}  
-
-//  Password hash/encrypt thing
-function psEncPw(pass, pskey) {
-	return ps.hex_hmac_md5(pskey, ps.b64_md5(pass));
+		pstoken = body.match(pstokenRegex)[1];
+		contextData = body.match(contextDataRegex)[1];
+		
+		// contextData and pskey are the same thing
+		
+		callback(pstoken, contextData);
+	});
 }
 
-function Class() {
+// Attempts to authenticate a user
+function sendAuthData(username, password, hostname, pstoken, contextData, callback) {
+	var data = {
+		'pstoken': pstoken,
+		'contextData': contextData,
+		'dbpw': encryptDBPW(contextData, password),
+		'serviceName': 'PS Parent Portal',
+		'pcasServerUrl': '/',
+		'credentialType': 'User Id and Password Credential',
+		'account': username,
+		'pw': encryptPassword(contextData, password)
+	};
 	
+	post(hostname, '/guardian/home.html', querystring.stringify(data), function(body, cookie) {
+		callback(body, cookie);
+	});
 }
+
+module.exports = function(username, password, hostname) {
+	getAuthData(hostname, function(pstoken, contextData) {
+		sendAuthData(username, password, hostname, pstoken, contextData, function(body, cookie) {
+			console.log(body);
+		});
+	});
+} 
