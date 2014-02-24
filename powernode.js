@@ -1,12 +1,12 @@
 // Needed modules
-var https = require('http');
+var https = require('https');
 var querystring = require('querystring');
 
 // Bring in PowerSchool's hack-y md5 crypto *shudder*
 eval(require('fs').readFileSync('./pscrypto.js')+'');
 
 // User agent for all requests
-var userAgent = 'powernode/0.0.0 (https://github.com/wtfaremyinitials/powernode)';
+var userAgent = 'powernode/0.0.1 (https://github.com/wtfaremyinitials/powernode)';
 
 // Uses PowerSchool's weird crypto to hash/encrypt the user's password
 function encryptPassword(contextData, password) {
@@ -28,7 +28,7 @@ function get(hostname, path, callback, cookie) {
 			'Cookie': (typeof cookie != 'undefined')? (cookie) : ('')
 		}
 	}
-
+	
 	https.request(options, function(res){
 		var body = '';
 		res.on('data', function(data){
@@ -39,6 +39,8 @@ function get(hostname, path, callback, cookie) {
 			if(cookie) {
 				cookie = (cookie + '').split(';').shift()
 			}
+			
+			console.log(res.headers);
 			
 			return callback(body, cookie);
 		});
@@ -109,7 +111,6 @@ function sendAuthData(username, password, hostname, pstoken, contextData, callba
 module.exports = function(username, password, hostname) {
 	getAuthData(hostname, function(pstoken, contextData) {
 		sendAuthData(username, password, hostname, pstoken, contextData, function(body, cookie) {
-			console.log(body);
 		});
 	});
 } 
