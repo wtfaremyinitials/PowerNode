@@ -78,8 +78,8 @@ function post(hostname, path, data, callback, cookie) {
 // Gets data needed to authenticate a new user
 function getAuthData(hostname, callback) {
 	get(hostname, '/public/home.html', function(body, cookie) {
-		var pstokenRegex = /.*<input type="hidden" name="pstoken" value="(.*)" \/>.*/ // I hate regex
-		var contextDataRegex = /.*<input type="hidden" name="contextData" value="(.*)" \/>.*/
+		var pstokenRegex = /<input type="hidden" name="pstoken" value="(.*)" \/>/g; // I hate regex
+		var contextDataRegex = /<input type="hidden" name="contextData" value="(.*)" \/>/g;
 		
 		pstoken = body.match(pstokenRegex)[1];
 		contextData = body.match(contextDataRegex)[1];
