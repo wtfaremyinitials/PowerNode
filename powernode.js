@@ -19,6 +19,7 @@ function encryptDBPW(contextData, password) {
 
 // Performs a GET request
 function get(hostname, path, callback, cookie) {
+	
 	var options = {
 		host: hostname,
 		path: path,
@@ -39,8 +40,6 @@ function get(hostname, path, callback, cookie) {
 			if(cookie) {
 				cookie = (cookie + '').split(';').shift()
 			}
-			
-			console.log(res.headers);
 			
 			return callback(body, cookie);
 		});
@@ -78,13 +77,15 @@ function post(hostname, path, data, callback, cookie) {
 // Gets data needed to authenticate a new user
 function getAuthData(hostname, callback) {
 	get(hostname, '/public/home.html', function(body, cookie) {
-		var pstokenRegex = /<input type="hidden" name="pstoken" value="(.*)" \/>/g; // I hate regex
-		var contextDataRegex = /<input type="hidden" name="contextData" value="(.*)" \/>/g;
+		var pstokenRegex = /<input type="hidden" name="pstoken" value="([a-z0-9]*)" \/>/g; // I hate regex
+		var contextDataRegex = /<input type="hidden" name="contextData" value="([A-Z0-9]*)" \/>/g;
 		
-		pstoken = body.match(pstokenRegex)[1];
-		contextData = body.match(contextDataRegex)[1];
+		pstoken = body.match(pstokenRegex)[0];
+		contextData = body.match(contextDataRegex)[0];
 		
 		// contextData and pskey are the same thing
+		
+		console.log(pstoken, contextData);
 		
 		callback(pstoken, contextData);
 	});
