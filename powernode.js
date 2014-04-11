@@ -79,7 +79,16 @@ var get = function(hostname, path, cookie) {
 /*
 	Models
 */
-var Student = {};
+var Student = function() {
+	this.hostname = "";
+	this.cookie   = "";
+	
+	this.authData = {
+		"pstoken": "",
+		"contextData": ""
+	}
+	
+};
 Student.prototype.getClasses();
 Student.prototype.getGrades(class);
 Student
@@ -89,7 +98,18 @@ Student
 	Functions
 */
 
-var getAuthenticationData = function() {
+var getAuthenticationData = function(student) {
+	get(student.hostname, '/public/', student.cookie).then()
+}
+
+var parseIndex = function(response) {
+	var body = response.body;
+	
+	var pstokenRegex = /<input type="hidden" name="pstoken" value="([a-z0-9]*)" \/>/g;
+	var contextDataRegex = /<input type="hidden" name="contextData" value="([A-Z0-9]*)" \/>/g;
+}
+
+var prepareAuthData = function() {
 	
 }
 
