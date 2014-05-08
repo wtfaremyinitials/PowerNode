@@ -1,20 +1,23 @@
 {
-    "name": "PowerNode",
-    "version": "0.0.0",
-    "description": "A nodejs module to get data from PowerSchool",
-
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/wtfaremyinitials/PowerNode.git"
-    },
-    "devDependencies": {
-        "grunt": "~0.4.4",
-        "grunt-contrib-jshint": "~0.10.0",
-        "grunt-contrib-nodeunit": "~0.3.3",
-        "grunt-contrib-clean": "*",
-        "grunt-shell": "*"
-    },
-    "scripts": {
-        "postinstall": "grunt setup"
-    }
+  "name": "PowerNode",
+  "version": "0.0.0",
+  "description": "A nodejs module to get data from PowerSchool",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wtfaremyinitials/PowerNode.git"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.3.3",
+    "grunt-contrib-clean": "*",
+    "grunt-shell": "*"
+  },
+  "scripts": {
+    "postinstall": "grunt setup"
+  },
+  "dependencies": {
+    "q": "^1.0.1",
+    "q-io": "^1.11.0"
+  }
 }
