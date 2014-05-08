@@ -1,12 +1,12 @@
 {
     "name": "PowerNode",
     "version": "0.0.0",
+    "description": "A nodejs module to get data from PowerSchool",
 
     "repository": {
         "type": "git",
         "url": "https://github.com/wtfaremyinitials/PowerNode.git"
     },
-
     "devDependencies": {
         "grunt": "~0.4.4",
         "grunt-contrib-jshint": "~0.10.0",
