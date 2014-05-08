@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+    
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -19,13 +20,25 @@ module.exports = function(grunt) {
                     output: 'outputdir'
                 }
             }
+        },
+        clean: {
+            hooks: ['.git/hooks/pre-commit']
+        },
+        shell: {
+            hooks: {
+                command: 'cp git-hooks/pre-commit .git/hooks/'
+            }
         }
     });
 
-    // Load the plugin that provides the "uglify" task.
+    // Load plugins
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-shell');
 
-    // Default task(s).
-    grunt.registerTask('default', ['jshint', 'nodeunit']);
+    // Tasks
+    grunt.registerTask('default', []);
+    grunt.registerTask('test', ['jshint', 'nodeunit']);
+    grunt.registerTask('setup', ['clean:hooks'], ['shell:hooks']);
 };
