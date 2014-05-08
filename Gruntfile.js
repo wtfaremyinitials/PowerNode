@@ -41,10 +41,10 @@ module.exports = function(grunt) {
 
     // Custom tasks
     grunt.registerTask('say-start', 'Task that prints a nice message to the console after tests.', function() {
-        grunt.log.writeLn('Linting and unit-testing code...');
+        grunt.log.writeln('Linting and unit-testing code...');
     });
     grunt.registerTask('say-end', 'Task that prints a nice message to the console before tests.', function() {
-        grunt.log.writeLn('Code looks all good! Committing...');
+        grunt.log.ok('Code looks all good! Committing...');
     });
 
     // Command line tasks
