@@ -39,8 +39,16 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-shell');
 
-    // Tasks
+    // Custom tasks
+    grunt.registerTask('say-start', 'Task that prints a nice message to the console after tests.', function() {
+        grunt.log.writeLn('Linting and unit-testing code...');
+    });
+    grunt.registerTask('say-end', 'Task that prints a nice message to the console before tests.', function() {
+        grunt.log.writeLn('Code looks all good! Committing...');
+    });
+
+    // Command line tasks
     grunt.registerTask('default', []);
-    grunt.registerTask('test', ['jshint', 'nodeunit']);
+    grunt.registerTask('test', ['say-start', 'jshint', 'nodeunit', 'say-end']);
     grunt.registerTask('setup', ['clean:hooks', 'shell:hooks']);
 };
