@@ -1,8 +1,9 @@
 module.exports = function(grunt) {
-    
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
         jshint : {
             files: ['Gruntfile.js', 'powernode.js'],
             options: {
@@ -21,6 +22,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         clean: {
             hooks: ['.git/hooks/pre-commit']
         },
@@ -40,5 +42,5 @@ module.exports = function(grunt) {
     // Tasks
     grunt.registerTask('default', []);
     grunt.registerTask('test', ['jshint', 'nodeunit']);
-    grunt.registerTask('setup', ['clean:hooks'], ['shell:hooks']);
+    grunt.registerTask('setup', ['clean:hooks', 'shell:hooks']);
 };
