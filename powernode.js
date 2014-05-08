@@ -4,7 +4,7 @@
 var Q     = require('q');
 var https = require('https');
 
-/* 
+/*
 	Variables
 */
 
@@ -26,25 +26,25 @@ var post = function(hostname, path, cookie, data) {
 				'UserAgent': userAgent,
 				'Cookie': (cookie || '')
 			}
-		}
+		};
 
 		https.request(options, function(res){
 			var body = '';
-			
+
 			res.on('data', function(data){
 				body += data;
 			});
-			
+
 			res.on('end', function() {
 				return {
 					"body": body,
 					"cookie": (res.headers['Set-Cookie'] || '')
-				}
+				};
 			});
-			
-		}).end(data); 
+
+		}).end(data);
 	});
-}
+};
 
 var get = function(hostname, path, cookie) {
 	return Q.fcall(function(hostname, path, cookie) {
@@ -56,25 +56,25 @@ var get = function(hostname, path, cookie) {
 				'UserAgent': userAgent,
 				'Cookie': (cookie || '')
 			}
-		}
+		};
 
 		https.request(options, function(res){
 			var body = '';
-			
+
 			res.on('data', function(data){
 				body += data;
 			});
-			
+
 			res.on('end', function() {
 				return {
 					"body": body,
 					"cookie": res.headers['Set-Cookie']
-				}
+				};
 			});
-			
-		}); 
+
+		});
 	});
-}
+};
 
 /*
 	Models
@@ -82,16 +82,19 @@ var get = function(hostname, path, cookie) {
 var Student = function() {
 	this.hostname = "";
 	this.cookie   = "";
-	
+
 	this.authData = {
 		"pstoken": "",
 		"contextData": ""
-	}
-	
+	};
+
 };
-Student.prototype.getClasses();
-Student.prototype.getGrades(class);
-Student
+Student.prototype.getClasses = function() {
+
+};
+Student.prototype.getGrades = function() {
+
+};
 
 
 /*
@@ -99,28 +102,28 @@ Student
 */
 
 var getAuthenticationData = function(student) {
-	get(student.hostname, '/public/', student.cookie).then()
-}
+	get(student.hostname, '/public/', student.cookie).then();
+};
 
 var parseIndex = function(response) {
 	var body = response.body;
-	
+
 	var pstokenRegex = /<input type="hidden" name="pstoken" value="([a-z0-9]*)" \/>/g;
 	var contextDataRegex = /<input type="hidden" name="contextData" value="([A-Z0-9]*)" \/>/g;
-}
+};
 
 var prepareAuthData = function() {
-	
-}
+
+};
 
 
 var loginStudent = function(hostname, username, password) {
 	return Q.fcall(function() {
-		
-		
-		
-		
+
+
+
+
 	});
-}
+};
 
 module.exports.loginStudent = loginStudent;
