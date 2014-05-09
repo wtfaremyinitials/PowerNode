@@ -38,25 +38,26 @@ Student.prototype.getGrades = function() {
 /*
 	Functions
 */
-var authenticate = function() {
-	requestIndex().
+var authenticate = function(student) {
+	requestIndex(student).
 		then(parseIndex).
-		then(hashData).
 		then(requestLogin).
 		then(checkSuccess);
 };
 
 var requestIndex = function(student) {
-	HTTP.request({
+	return HTTP.request({
 		scheme: 'https:',
 		method: 'GET',
 		host: student.hostname,
 		path: '/public/home.html',
 		port: 443,
-	}).then(parseIndex);
+	});
 };
 
 var parseIndex = function(response) {
+	var d = Q.defer();
+
 	var body = response.body;
 
 	var pstokenRegex = /<input type="hidden" name="pstoken" value="([a-z0-9]*)" \/>/g;
@@ -65,6 +66,9 @@ var parseIndex = function(response) {
 	student.cookie = response.header['Set-Cookie'];
 	student.authData.pstoken = body.match(pstokenRegex);
 	student.authData.contextData = body.match(contextDataRegex);
+
+	d.resolve();
+	return d;
 };
 
 // Perform the login request
@@ -93,18 +97,25 @@ var requestLogin = function() {
 		Cookie: student.cookie
 	};
 
-	HTTP.request({
+	return HTTP.request({
 		scheme: 'https:',
 		method: 'POST',
 		host: student.hostname,
 		path: '/guardian/home.html',
 		port: 443,
 		headers: loginInfo
-	}).then(function(response) {
-		resolve(response);
-	}).catch(function(error) {
-		throw("Login Failed: " + error);
 	});
+};
+
+var checkSuccess = function(response) {
+	var d = Q.defer();
+	if(response.status == 302) {
+		// Success! We're being redirected to the homepage
+		d.resolve(student);
+	} else {
+		throw("Login Failed - Rejected");
+	}
+	return d;
 };
 
 var hashPassword = function(contextData, password) {
@@ -118,9 +129,7 @@ var generateDBPW = function(contextData, password) {
 var loginStudent = function(hostname, username, password) {
 	return Q.fcall(function() {
 		var student = new Student(hostname, username, password);
-		authenticate(student).then(function() {
-			resolve(student);
-		});
+		return authenticate(student);
 	});
 };
 
