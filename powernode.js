@@ -102,11 +102,9 @@ var requestLogin = function() {
 		headers: loginInfo
 	}).then(function(response) {
 		resolve(response);
+	}).catch(function(error) {
+		throw("Login Failed: " + error);
 	});
-};
-
-var checkSuccess = function() {
-
 };
 
 var hashPassword = function(contextData, password) {
