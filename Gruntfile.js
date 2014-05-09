@@ -16,10 +16,7 @@ module.exports = function(grunt) {
         nodeunit: {
             all: ['test/*.js'],
             options: {
-                reporter: 'junit',
-                reporterOptions: {
-                    output: 'outputdir'
-                }
+                reporter: 'default'
             }
         },
 
