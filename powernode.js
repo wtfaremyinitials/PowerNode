@@ -3,7 +3,7 @@
  */
 var Q = require('q');
 var HTTP = require('q-io/http');
-var pscrypto = require('lib/pscrypto');
+var pscrypto = require('./lib/pscrypto');
 
 /*
 	Constants
