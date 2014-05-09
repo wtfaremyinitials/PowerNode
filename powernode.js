@@ -39,7 +39,7 @@ Student.prototype.getGrades = function() {
 	Functions
 */
 var authenticate = function(student) {
-	requestIndex(student).
+	return requestIndex(student).
 		then(parseIndex).
 		then(requestLogin).
 		then(checkSuccess);
