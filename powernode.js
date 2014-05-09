@@ -100,6 +100,8 @@ var requestLogin = function() {
 		path: '/guardian/home.html',
 		port: 443,
 		headers: loginInfo
+	}).then(function(response) {
+		resolve(response);
 	});
 };
 
