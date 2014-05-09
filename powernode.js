@@ -99,7 +99,7 @@ var requestLogin = function() {
 		host: student.hostname,
 		path: '/guardian/home.html',
 		port: 443,
-		headers: loginInf
+		headers: loginInfo
 	});
 };
 
