@@ -15,8 +15,10 @@ var userAgent = 'powernode/0.0.1 (https://github.com/wtfaremyinitials/powernode)
 	Models
 */
 var Student = function(hostname, username, password) {
-	this.hostname = "";
-	this.cookie   = "";
+	this.hostname = hostname;
+	this.usernane = username;
+	this.password = password;
+	this.cookie = "";
 
 	this.authData = {
 		pstoken: "",
@@ -40,15 +42,16 @@ var authenticate = function() {
 		then(parseIndex).
 		then(hashData).
 		then(requestLogin).
-		then(parseHome);
+		then(checkSuccess);
 };
 
 var requestIndex = function(student) {
 	HTTP.request({
 		scheme: 'https:',
+		method: 'GET',
 		host: student.hostname,
-		path: '/public/home.html',
-		port: 443
+		path: '/public/',
+		port: 443,
 	}).then(parseIndex);
 };
 
@@ -58,8 +61,9 @@ var parseIndex = function(response) {
 	var pstokenRegex = /<input type="hidden" name="pstoken" value="([a-z0-9]*)" \/>/g;
 	var contextDataRegex = /<input type="hidden" name="contextData" value="([A-Z0-9]*)" \/>/g; // AKA pskey
 
-	student.pstoken = body.match(pstokenRegex);
-	student.contextData = body.match(contextDataRegex);
+	student.cookie = response.header['Set-Cookie'];
+	student.authData.pstoken = body.match(pstokenRegex);
+	student.authData.contextData = body.match(contextDataRegex);
 };
 
 // Hash important powerschool data
@@ -69,11 +73,37 @@ var hashData = function() {
 
 // Perform the login request
 var requestLogin = function() {
+	var hashedPassword = hashPassword(student.password);
 
+	var loginInfo = {
+		pstoken: student.pstoken,
+		contextData: student.contextData,
+		dbpw: '', // TODO: Dafuq is the dbpw...
+		translator_username: '',
+		translator_password: '',
+		translator_ldappassword: '',
+		returnUrl: '',
+		serviceName: 'PS Parent Portal', // TODO: Am I allowed to change this?
+		serviceTicket: '',
+		pcasServerUrl: '/',
+		credentialType: 'User Id and Password Credential',
+		account: student.username,
+		pw: hashedPassword,
+		translatorpw: '',
+		Cookie: student.cookie
+	};
+
+	HTTP.request({
+		scheme: 'https:',
+		method: 'POST',
+		host: student.hostname,
+		path: '/guardian/home.html',
+		port: 443,
+		headers: loginInf
+	});
 };
 
-// Parses grades on homepage
-var parseHome = function() {
+var checkSuccess = function() {
 
 };
 
