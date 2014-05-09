@@ -127,10 +127,8 @@ var generateDBPW = function(contextData, password) {
 };
 
 var loginStudent = function(hostname, username, password) {
-	return Q.fcall(function() {
-		var student = new Student(hostname, username, password);
-		return authenticate(student);
-	});
+	var student = new Student(hostname, username, password);
+	return authenticate(student);
 };
 
 module.exports.loginStudent = loginStudent;
