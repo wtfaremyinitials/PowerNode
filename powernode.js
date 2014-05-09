@@ -110,7 +110,7 @@ var checkSuccess = function() {
 };
 
 var hashPassword = function(contextData, password) {
-	return pscrypto.hex_hmac_md5(contextData, pscrypto.b64md5(password));
+	return pscrypto.hex_hmac_md5(contextData, pscrypto.b64_md5(password));
 };
 
 var generateDBPW = function(contextData, password) {
