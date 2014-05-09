@@ -132,3 +132,4 @@ var loginStudent = function(hostname, username, password) {
 };
 
 module.exports.loginStudent = loginStudent;
+module.exports.userAgent = userAgent;
