@@ -3,6 +3,7 @@
  */
 var Q = require('q');
 var HTTP = require('q-io/http');
+var pscrypto = require('lib/pscrypto');
 
 /*
 	Constants
@@ -50,7 +51,7 @@ var requestIndex = function(student) {
 		scheme: 'https:',
 		method: 'GET',
 		host: student.hostname,
-		path: '/public/',
+		path: '/public/home.html',
 		port: 443,
 	}).then(parseIndex);
 };
@@ -66,14 +67,13 @@ var parseIndex = function(response) {
 	student.authData.contextData = body.match(contextDataRegex);
 };
 
-// Hash important powerschool data
-var hashData = function() {
-
-};
-
 // Perform the login request
 var requestLogin = function() {
-	var hashedPassword = hashPassword(student.password);
+	var password = student.password;
+	var contextData = student.authData.contextData;
+
+	var hashedPassword = hashPassword(contextData, password);
+	var dbpw = generateDBPW(contextData, password);
 
 	var loginInfo = {
 		pstoken: student.pstoken,
@@ -105,6 +105,14 @@ var requestLogin = function() {
 
 var checkSuccess = function() {
 
+};
+
+var hashPassword = function(contextData, password) {
+	return pscrypto.hex_hmac_md5(contextData, pscrypto.b64md5(password));
+};
+
+var generateDBPW = function(contextData, password) {
+	return pscrypto.hex_hmac_md5(contextData, password.toLowerCase());
 };
 
 var loginStudent = function(hostname, username, password) {
