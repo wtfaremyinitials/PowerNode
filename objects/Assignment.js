@@ -1,8 +1,9 @@
-module.exports = function() {
-    this.name = '';
-    this.grade = {};
-    this.teacher = {};
-    this.student = {};
+module.exports = function(name, grade, status, comment, teacher) {
+    this.name = name;
+    this.grade = grade;
+    this.sttaus = status;
+    this.comment = comment;
+    this.teacher = teacher;
 };
 
 module.exports.prototype.toString = function() {
