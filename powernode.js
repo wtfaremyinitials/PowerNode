@@ -1,8 +1,8 @@
 /*
 	Packages
  */
-var Q = require('q');
-var HTTP = require('q-io/http');
+var when = require('when');
+var rest = require('rest');
 var pscrypto = require('./lib/pscrypto');
 
 /*
@@ -12,63 +12,19 @@ var pscrypto = require('./lib/pscrypto');
 // User Agent sent to PowerSchool server
 var userAgent = 'powernode/0.0.1 (https://github.com/wtfaremyinitials/powernode)';
 
-/*
-	Models
-*/
-var Student = function(hostname, username, password) {
-	this.hostname = hostname;
-	this.usernane = username;
-	this.password = password;
-	this.cookie = "";
-
-	this.authData = {
-		pstoken: "",
-		contextData: ""
-	};
-
-};
-Student.prototype.getClasses = function() {
-
-};
-Student.prototype.getGrades = function() {
-
-};
-
-
-/*
-	Functions
-*/
-var authenticate = function(student) {
-	return requestIndex(student).
-		then(parseIndex).
-		then(requestLogin).
-		then(checkSuccess);
-};
-
 var requestIndex = function(student) {
-	return HTTP.request({
-		scheme: 'https:',
-		method: 'GET',
-		host: student.hostname,
-		path: '/public/home.html',
-		port: 443,
-	});
+	return rest('https://' + student.hostname + '/public/');
 };
 
 var parseIndex = function(response) {
-	var d = Q.defer();
-
 	var body = response.body;
 
 	var pstokenRegex = /<input type="hidden" name="pstoken" value="([a-z0-9]*)" \/>/g;
 	var contextDataRegex = /<input type="hidden" name="contextData" value="([A-Z0-9]*)" \/>/g; // AKA pskey
 
-	student.cookie = response.header['Set-Cookie'];
+	student.cookie = response.header['set-cookie'];
 	student.authData.pstoken = body.match(pstokenRegex);
 	student.authData.contextData = body.match(contextDataRegex);
-
-	d.resolve();
-	return d;
 };
 
 // Perform the login request
@@ -97,7 +53,7 @@ var requestLogin = function() {
 		Cookie: student.cookie
 	};
 
-	return HTTP.request({
+	return rest({
 		scheme: 'https:',
 		method: 'POST',
 		host: student.hostname,
@@ -108,14 +64,12 @@ var requestLogin = function() {
 };
 
 var checkSuccess = function(response) {
-	var d = Q.defer();
 	if(response.status == 302) {
 		// Success! We're being redirected to the homepage
 		d.resolve(student);
 	} else {
 		throw("Login Failed - Rejected");
 	}
-	return d;
 };
 
 var hashPassword = function(contextData, password) {

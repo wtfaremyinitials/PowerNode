@@ -18,7 +18,7 @@
     "postinstall": "grunt setup"
   },
   "dependencies": {
-    "q": "^1.0.1",
-    "q-io": "^1.11.0"
+    "when": "^3.1.0",
+    "rest": "^1.1.0"
   }
 }
