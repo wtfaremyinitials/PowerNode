@@ -15,7 +15,8 @@
     "grunt-shell": "*"
   },
   "scripts": {
-    "postinstall": "grunt setup"
+    "postinstall": "grunt setup",
+    "test": "grunt test"
   },
   "dependencies": {
     "when": "^3.1.0",
