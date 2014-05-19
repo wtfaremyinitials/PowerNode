@@ -13,13 +13,15 @@ var Course = require("objects/Course");
 var Grade = require("objects/Grade");
 var Student = require("objects/Student");
 var Teacher = require("objects/Teacher");
+
 /*
 	Constants
 */
-
-// User Agent sent to PowerSchool server
 var userAgent = 'powernode/0.0.1 (https://github.com/wtfaremyinitials/powernode)';
 
+/*
+    Functions
+*/
 var requestIndex = function(student) {
 	return rest('https://' + student.hostname + '/public/');
 };
@@ -88,10 +90,4 @@ var generateDBPW = function(contextData, password) {
 	return pscrypto.hex_hmac_md5(contextData, password.toLowerCase());
 };
 
-var loginStudent = function(hostname, username, password) {
-	var student = new Student(hostname, username, password);
-	return authenticate(student);
-};
-
-module.exports.loginStudent = loginStudent;
-module.exports.userAgent = userAgent;
+module.exports.Student = Student;
