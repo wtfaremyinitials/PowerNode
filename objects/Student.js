@@ -26,7 +26,7 @@ module.exports.prototype.authenticate = function(hostname, username, password) {
     });
 };
 
-module.exports.prototype.getClasses = function() {
+module.exports.prototype.getCourses = function() {
     return Q.fcall(function() {
 
     });
