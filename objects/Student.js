@@ -16,7 +16,7 @@ module.exports = function() {
     ];
 };
 
-module.exports.prototype.authenticate = function(hostname, username, Password) {
+module.exports.prototype.authenticate = function(hostname, username, password) {
     this.hostname = hostname;
     this.username = username;
     this.password = password;
