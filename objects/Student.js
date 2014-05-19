@@ -26,13 +26,13 @@ module.exports.prototype.authenticate = function(hostname, username, Password) {
     });
 };
 
-Student.prototype.getClasses = function() {
+module.exports.prototype.getClasses = function() {
     return Q.fcall(function() {
 
     });
 };
 
-Student.prototype.getGrades = function() {
+module.exports.prototype.getGrades = function() {
     return Q.fcall(function() {
 
     });
