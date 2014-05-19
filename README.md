@@ -11,16 +11,17 @@ Firstly, why not? The main reason behind this project was an easy to use API to 
 Usage
 =====
 
-    var powernode = require('powernode');
+```javascript
+var powernode = require('powernode');
 
-    var log = function(data) {
-        console.log(data);
-    };
+var log = function(data) {
+    console.log(data);
+};
 
-    var printCourses = function(student) {
-        student.getCourses().then(log);
-    };
+var printCourses = function(student) {
+    student.getCourses().then(log);
+};
 
-    var bob = new Student();
-    bob.authenticate('psd1337.yourschooldistrict.org', 'yourstudentid', 'yourpassword').then(printCourses);
-    
+var bob = new Student();
+bob.authenticate('psd1337.yourschooldistrict.org', 'yourstudentid', 'yourpassword').then(printCourses);
+```    
