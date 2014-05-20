@@ -1,4 +1,5 @@
 var Q = require('q');
+var util = require('../lib/util.js');
 
 module.exports = function() {
     this.hostname = '';
