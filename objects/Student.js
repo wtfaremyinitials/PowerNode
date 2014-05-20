@@ -26,7 +26,10 @@ module.exports.prototype.authenticate = function(hostname, username, password) {
             .then(util.parseIndex)
             .then(util.requestLogin)
             .then(util.checkSuccess)
-            .then(function() { return this; });
+            .then(function() { return this; })
+            .catch(function() {
+                // TODO: Handle errors somewhat gracefully
+            });
 };
 
 module.exports.prototype.getCourses = function() {
