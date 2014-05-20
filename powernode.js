@@ -1,8 +1,7 @@
 /*
 	Packages
  */
-var when = require('when');
-var rest = require('rest');
+var Q = require('Q');
 var pscrypto = require('./lib/pscrypto');
 
 /*
