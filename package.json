@@ -19,6 +19,4 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "q": "*"
-  }
-}
+    "q

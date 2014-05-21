@@ -1,4 +1,5 @@
 var Q = require('q');
+var util = require('../lib/util.js');
 
 module.exports = function() {
     this.hostname = '';
@@ -21,9 +22,14 @@ module.exports.prototype.authenticate = function(hostname, username, password) {
     this.username = username;
     this.password = password;
 
-    return requestIndex().then(parseIndex).then(requestLogin).then(checkSuccess).then(function() {
-        return this;
-    });
+    return util.requestIndex()
+            .then(util.parseIndex)
+            .then(util.requestLogin)
+            .then(util.checkSuccess)
+            .then(function() { return this; })
+            .catch(function() {
+                // TODO: Handle errors somewhat gracefully
+            });
 };
 
 module.exports.prototype.getCourses = function() {
