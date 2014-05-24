@@ -11,10 +11,6 @@ module.exports = function() {
         pstoken: '',
         contextData: ''
     };
-
-    this.semester = [
-
-    ];
 };
 
 module.exports.prototype.authenticate = function(hostname, username, password) {
@@ -33,15 +29,11 @@ module.exports.prototype.authenticate = function(hostname, username, password) {
 };
 
 module.exports.prototype.getCourses = function() {
-    return Q.fcall(function() {
-
-    });
+    return util.getCourses(this.hostname, this.cookie);
 };
 
-module.exports.prototype.getGrades = function() {
-    return Q.fcall(function() {
-
-    });
+module.exports.prototype.getGrades = function(course, semester) {
+    return util.getGrades(this.hostname, this.cookie, course, semester);
 };
 
 module.exports.prototype.toString = function() {
