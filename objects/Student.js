@@ -1,16 +1,25 @@
 var Q = require('q');
+var xml2js = require('xml2js');
 var util = require('../lib/util.js');
+
+var parseString = function(xmlData) {
+    var deferred = Q.defer();
+    xml2js.parseString(xmlData, deferred.resolve);
+    return deferred.promise;
+};
 
 module.exports = function() {
     this.hostname = '';
     this.usernane = '';
     this.password = '';
-    this.cookie = '';
+    this.cookie   = '';
 
     this.authData = {
         pstoken: '',
         contextData: ''
     };
+
+    this.courses = [];
 };
 
 module.exports.prototype.authenticate = function(hostname, username, password) {
@@ -28,12 +37,12 @@ module.exports.prototype.authenticate = function(hostname, username, password) {
             });
 };
 
-module.exports.prototype.getCourses = function() {
-    return util.getCourses(this.hostname, this.cookie);
+module.exports.prototype.update = function() {
+    return util.get('/guardian/studentdata.xml', this.cookie).then(parseXML).then(deferred.resolve);
 };
 
-module.exports.prototype.getGrades = function(course, semester) {
-    return util.getGrades(this.hostname, this.cookie, course, semester);
+module.expots.prototype.updateObject = function() {
+
 };
 
 module.exports.prototype.toString = function() {
