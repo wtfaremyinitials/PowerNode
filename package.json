@@ -6,17 +6,4 @@
     "type": "git",
     "url": "https://github.com/wtfaremyinitials/PowerNode.git"
   },
-  "devDependencies": {
-    "grunt": "~0.4.4",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-nodeunit": "~0.3.3",
-    "nodeunit": "^0.8.7",
-    "grunt-contrib-clean": "*",
-    "grunt-shell": "*"
-  },
-  "scripts": {
-    "postinstall": "grunt setup",
-    "test": "grunt test"
-  },
-  "dependencies": {
-    "q
+}

@@ -1,6 +1,0 @@
-#!/bin/sh
-#
-# Pre-commit hooks
-
-# Test and lint stuff before committing
-grunt test
