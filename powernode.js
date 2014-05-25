@@ -9,7 +9,7 @@ var pscrypto = require('./lib/pscrypto');
 /*
 	Generic Methods
 */
-var request = function(options, callback) {
+var request = function(options, data) {
 	var deferred = Q.defer();
 
 	var request = https.request(options, function(res) {
@@ -24,7 +24,7 @@ var request = function(options, callback) {
 			});
 		});
 	}).on('error', deferred.reject);
-	request.end();
+	request.end(JSON.stringify((data || '')));
 
 	return deferred.promise;
 };
@@ -48,30 +48,20 @@ var userAgent = 'powernode/0.0.0 (https://github.com/wtfaremyinitials/powernode)
 	Exports
 */
 module.exports.getStudentData = function(hostname, username, password) {
-	var contextData = '';
-	var pstoken = '';
-	var cookie = '';
-	return getIndex(hostname)
+	var state = {
+		'hostname': hostname,
+		'username': username,
+		'password': password,
+		'index': '',
+		'pstoken': '',
+		'contextData': '',
+		'cookie': '',
+		'loginData': {}
+	};
+
+	return getIndex(state)
     		.then(parseIndex)
-			.then(function(data) {
-				return Q.fcall(function() {
-					return {
-						'pstoken': data.pstoken,
-						'contextData': data.contextData,
-						'username': username,
-						'password': password
-					};
-				});
-			})
 			.then(prepareLogin)
-			.then(function(data) {
-				Q.fcall(function(){
-					return {
-						'options': data,
-						'hostname': hostname
-					};
-				});
-			})
 			.then(requestLogin)
 			.then(downloadXML)
 			.then(parseXML)
@@ -82,55 +72,65 @@ module.exports.getStudentData = function(hostname, username, password) {
 	Logic
 */
 
-var getIndex = function(hostname) {
+var getIndex = function(state) {
 	return request({
 		'method': 'GET',
 		'path': '/public/',
-		'hostname': hostname
+		'hostname': state.hostname
+	}).then(function(response) {
+		state.index = response.body;
+		state.cookie = response.cookie;
+		return state;
 	});
 };
 
-var parseIndex = function(response) {
-	var body = response.body;
+var parseIndex = function(state) {
+	var body = state.index;
 
 	var pstokenRegex     = /name="pstoken" value="([a-zA-Z0-9]*)"/g;
     var contextDataRegex = /name="contextData" value="([A-Z0-9]*)"/g; // AKA pskey
 
-    return {
-		'pstoken': pstokenRegex.exec(body)[1],
-		'contextData': contextDataRegex.exec(body)[1]
-	};
+	state.pstoken = pstokenRegex.exec(body)[1];
+	state.contextData = contextDataRegex.exec(body)[1];
+
+    return state;
 };
 
-var prepareLogin = function(data) {
-	return {
-		pstoken: data.pstoken,
-        contextData: data.contextData,
-        dbpw: generateDBPW(contextData, data.password), // TODO: Dafuq is the dbpw...
-        translator_username: '',
-        translator_password: '',
-        translator_ldappassword: '',
-        returnUrl: '',
-        serviceName: 'PS Parent Portal', // TODO: Am I allowed to change this?
-        serviceTicket: '',
-        pcasServerUrl: '/',
-        credentialType: 'User Id and Password Credential',
-        account: data.username,
-        pw: hashPassword(data.contextData, data.password),
-        translatorpw: ''
+var prepareLogin = function(state) {
+
+	var data = {
+		pstoken: state.pstoken,
+		contextData: state.contextData,
+		dbpw: generateDBPW(state.contextData, state.password), // TODO: Dafuq is the dbpw...
+		translator_username: '',
+		translator_password: '',
+		translator_ldappassword: '',
+		returnUrl: '',
+		serviceName: 'PS Parent Portal', // TODO: Am I allowed to change this?
+		serviceTicket: '',
+		pcasServerUrl: '/',
+		credentialType: 'User Id and Password Credential',
+		account: state.username,
+		pw: hashPassword(state.contextData, state.password),
+		translatorpw: ''
 	};
+	state.loginData = data;
+	return state;
 };
 
-var requestLogin = function(data) {
-	request({
+var requestLogin = function(state) {
+	return request({
 		'method': 'POST',
 		'path': '/guardian/home.html',
-		'hostname': data.hostname
+		'hostname': state.hostname
+	}, state.loginData).then(function(response) {
+		state.cookie = (response.cookie || state.cookie);
+		return state;
 	});
 };
 
-var downloadXML = function(data) {
-	console.log(data.body);
+var downloadXML = function(state) {
+
 };
 
 var convert = function(studentData) {
