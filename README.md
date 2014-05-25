@@ -13,15 +13,4 @@ Usage
 
 ```javascript
 var powernode = require('powernode');
-
-var log = function(data) {
-    console.log(data);
-};
-
-var printCourses = function(student) {
-    student.getCourses().then(log);
-};
-
-var bob = new Student();
-bob.authenticate('psd1337.yourschooldistrict.org', 'yourstudentid', 'yourpassword').then(printCourses);
-```    
+```

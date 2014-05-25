@@ -24,7 +24,7 @@ module.exports.getStudentData = function(hostname, username, password) {
 };
 
 var getIndex = function(hostname) {
-
+	
 };
 
 var parseIndex = function(response) {
