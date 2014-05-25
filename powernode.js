@@ -4,9 +4,9 @@
 var Q      = require('Q');
 var xml2js = require('xml2js');
 var https  = require('https');
+var cookie = require('cookie');
 var querystring = require('querystring');
 var pscrypto = require('./lib/pscrypto');
-
 
 /*
 	Generic Methods
@@ -39,6 +39,22 @@ var hashPassword = function(contextData, password) {
 
 var generateDBPW = function(contextData, password) {
     return pscrypto.hex_hmac_md5(contextData, password.toLowerCase());
+};
+
+var mergeCookies = function(currentCookie, newCookies) {
+	currentCookie = cookie.parse(currentCookie);
+
+	for(var i=0; i<newCookies.length; i++) {
+		newCookies[i] = cookie.parse(newCookies[i]);
+	}
+
+	for(var j=0; i<newCookies.length; i++) {
+		for (var attrname in newCookies[j]) {
+			currentCookie[attrname] = newCookies[attrname];
+		}
+	}
+
+	return cookie.serialize(currentCookie);
 };
 
 var parseXML = Q.denodeify(xml2js.parseString);
@@ -84,7 +100,7 @@ var getIndex = function(state) {
 		'hostname': state.hostname
 	}).then(function(response) {
 		state.index = response.body;
-		state.cookie = response.cookie;
+		state.cookie = mergeCookies(state.cookie, response.cookie);
 		return state;
 	});
 };
@@ -130,7 +146,7 @@ var requestLogin = function(state) {
 		'hostname': state.hostname,
 		'Cookie': state.cookie
 	}, state.loginData).then(function(response) {
-		state.cookie = (response.cookie || state.cookie);
+		state.cookie = mergeCookies(state.cookie, response.cookie);
 		return state;
 	});
 };
