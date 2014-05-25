@@ -4,13 +4,17 @@
 var Q      = require('Q');
 var xml2js = require('xml2js');
 var https  = require('https');
+var querystring = require('querystring');
 var pscrypto = require('./lib/pscrypto');
+
 
 /*
 	Generic Methods
 */
 var request = function(options, data) {
 	var deferred = Q.defer();
+
+	data = querystring.stringify(data || '');
 
 	var request = https.request(options, function(res) {
 		var body = '';
@@ -24,7 +28,7 @@ var request = function(options, data) {
 			});
 		});
 	}).on('error', deferred.reject);
-	request.end(encodeURIComponent((data || '')));
+	request.end(data);
 
 	return deferred.promise;
 };
@@ -123,7 +127,8 @@ var requestLogin = function(state) {
 	return request({
 		'method': 'POST',
 		'path': '/guardian/home.html',
-		'hostname': state.hostname
+		'hostname': state.hostname,
+		'Cookie': state.cookie
 	}, state.loginData).then(function(response) {
 		state.cookie = (response.cookie || state.cookie);
 		return state;
@@ -131,7 +136,15 @@ var requestLogin = function(state) {
 };
 
 var downloadXML = function(state) {
-
+	return request({
+		'method': 'GET',
+		'path': '/guardian/studentdata.xml',
+		'hostname': state.hostname,
+		'Cookie': state.cookie
+	}).then(function(response) {
+		state.xml = response.body;
+		return state;
+	});
 };
 
 var parseXML = function(state) {
