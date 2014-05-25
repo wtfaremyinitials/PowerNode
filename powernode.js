@@ -24,7 +24,7 @@ var request = function(options, data) {
 			});
 		});
 	}).on('error', deferred.reject);
-	request.end(JSON.stringify((data || '')));
+	request.end(encodeURIComponent((data || '')));
 
 	return deferred.promise;
 };
@@ -56,7 +56,8 @@ module.exports.getStudentData = function(hostname, username, password) {
 		'pstoken': '',
 		'contextData': '',
 		'cookie': '',
-		'loginData': {}
+		'loginData': {},
+		'xml': ''
 	};
 
 	return getIndex(state)
@@ -133,6 +134,10 @@ var downloadXML = function(state) {
 
 };
 
-var convert = function(studentData) {
+var parseXML = function(state) {
+
+};
+
+var convert = function(state) {
 
 };
