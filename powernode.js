@@ -59,13 +59,11 @@ module.exports.getStudentData = function(hostname, username, password) {
 		'index': '',
 		'pstoken': '',
 		'contextData': '',
-		'cookieJar': {},
+		'cookieJar': new toughcookie.CookieJar(),
 		'loginData': {},
 		'xml': ''
 	};
 	
-	state.cookieJar = new toughcookie.CookieJar();
-
 	return getIndex(state)
             .then(parseIndex)
 			.then(prepareLogin)
