@@ -24,13 +24,19 @@ var request = function(options, data) {
 		res.on('end', function() {
 			deferred.resolve({
 				'body': body,
-				'cookie': (res.headers['set-cookie'] || '')
+				'cookies': (res.headers['set-cookie'] || '')
 			});
 		});
 	}).on('error', deferred.reject);
 	request.end(data);
 
 	return deferred.promise;
+};
+
+var setCookies = function(cookies, cookieJar, url) {
+    for(var i in cookies) {
+        cookieJar.setCookieSync(cookies[i], url);
+    }
 };
 
 var hashPassword = function(contextData, password) {
@@ -77,7 +83,6 @@ module.exports.getStudentData = function(hostname, username, password) {
 /*
 	Logic
 */
-
 var getIndex = function(state) {
 	return request({
 		'method': 'GET',
@@ -85,7 +90,7 @@ var getIndex = function(state) {
 		'hostname': state.hostname
 	}).then(function(response) {
 		state.index = response.body;
-		state.cookieJar.setCookieSync(response.cookie, 'https://' + state.hostname + '/public/');
+		setCookies(response.cookies, state.cookieJar, 'https://' + state.hostname + '/public/');
 		return state;
 	});
 };
@@ -131,7 +136,7 @@ var requestLogin = function(state) {
 		'hostname': state.hostname,
 		'Cookie': state.cookieJar.getCookiesSync('https://' + state.hostname + '/guardian/home.html')
 	}, state.loginData).then(function(response) {
-		state.cookieJar.setCookieSync(response.cookie, 'https://' + state.hostname + '/guardian/home.html');
+		setCookies(response.cookies, state.cookieJar, 'https://' + state.hostname + '/guardian/home.html');
 		return state;
 	});
 };
