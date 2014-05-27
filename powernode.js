@@ -59,13 +59,15 @@ module.exports.getStudentData = function(hostname, username, password) {
 		'index': '',
 		'pstoken': '',
 		'contextData': '',
-		'cookie': '',
+		'cookieJar': {},
 		'loginData': {},
 		'xml': ''
 	};
+	
+	state.cookieJar = new toughcookie.CookieJar();
 
 	return getIndex(state)
-    		.then(parseIndex)
+            .then(parseIndex)
 			.then(prepareLogin)
 			.then(requestLogin)
 			.then(downloadXML)
@@ -84,7 +86,7 @@ var getIndex = function(state) {
 		'hostname': state.hostname
 	}).then(function(response) {
 		state.index = response.body;
-		state.cookie = mergeCookies(state.cookie, response.cookie); // TODO: Replace with tough-cookie cookiejar
+		state.cookieJar.setCookieSync(response.cookie, 'https://' + state.hostname + '/public/');
 		return state;
 	});
 };
@@ -130,7 +132,7 @@ var requestLogin = function(state) {
 		'hostname': state.hostname,
 		'Cookie': state.cookie
 	}, state.loginData).then(function(response) {
-		state.cookie = mergeCookies(state.cookie, response.cookie); // TODO: Replace with tough-cookie cookiejar
+		state.cookieJar.setCookieSync(response.cookie, 'https://' + state.hostname + '/guardian/home.html');
 		return state;
 	});
 };
