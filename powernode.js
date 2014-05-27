@@ -1,7 +1,7 @@
 /*
 	Packages
  */
-var Q      = require('Q');
+var Q      = require('q');
 var xml2js = require('xml2js');
 var https  = require('https');
 var toughcookie = require('tough-cookie');
@@ -148,7 +148,7 @@ var downloadXML = function(state) {
 };
 
 var parseXML = function(state) {
-
+    
 };
 
 var convert = function(state) {
