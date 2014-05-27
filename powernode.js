@@ -9,12 +9,19 @@ var querystring = require('querystring');
 var pscrypto = require('./lib/pscrypto');
 
 /*
+	Constants
+*/
+var userAgent = 'powernode/0.0.0 (https://github.com/wtfaremyinitials/powernode)';
+
+/*
 	Generic Methods
 */
 var request = function(options, data) {
 	var deferred = Q.defer();
 
 	data = querystring.stringify(data || '');
+
+    options.headers['user-agent'] = userAgent;
 
 	var request = https.request(options, function(res) {
 		var body = '';
@@ -48,11 +55,6 @@ var generateDBPW = function(contextData, password) {
 };
 
 var parseXML = Q.denodeify(xml2js.parseString);
-
-/*
-	Constants
-*/
-var userAgent = 'powernode/0.0.0 (https://github.com/wtfaremyinitials/powernode)';
 
 /*
 	Exports
