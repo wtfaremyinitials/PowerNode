@@ -70,7 +70,8 @@ module.exports.getStudentData = function(hostname, username, password) {
 			.then(requestLogin)
 			.then(downloadXML)
 			.then(parseXML)
-			.then(convert);
+			.then(convert)
+			.catch(handleError);
 };
 
 /*
@@ -128,7 +129,7 @@ var requestLogin = function(state) {
 		'method': 'POST',
 		'path': '/guardian/home.html',
 		'hostname': state.hostname,
-		'Cookie': state.cookie
+		'Cookie': state.cookieJar.getCookiesSync('https://' + state.hostname + '/guardian/home.html')
 	}, state.loginData).then(function(response) {
 		state.cookieJar.setCookieSync(response.cookie, 'https://' + state.hostname + '/guardian/home.html');
 		return state;
@@ -140,7 +141,7 @@ var downloadXML = function(state) {
 		'method': 'GET',
 		'path': '/guardian/studentdata.xml',
 		'hostname': state.hostname,
-		'Cookie': state.cookie
+		'Cookie': state.cookieJar.getCookiesSync('https://' + state.hostname + '/guardian/studentdata.xml')
 	}).then(function(response) {
 		state.xml = response.body;
 		return state;
@@ -153,4 +154,8 @@ var parseXML = function(state) {
 
 var convert = function(state) {
 
+};
+
+var handleError = function(error) {
+    console.log(error);  
 };
