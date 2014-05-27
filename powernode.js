@@ -21,6 +21,7 @@ var request = function(options, data) {
 
 	data = querystring.stringify(data || '');
 
+    options.headers = options.headers || {};
     options.headers['user-agent'] = userAgent;
 
 	var request = https.request(options, function(res) {
