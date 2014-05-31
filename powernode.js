@@ -72,7 +72,7 @@ module.exports.getStudentData = function(hostname, username, password) {
 		'loginData': {},
 		'xml': ''
 	};
-	
+
 	return getIndex(state)
             .then(parseIndex)
 			.then(prepareLogin)
@@ -138,9 +138,9 @@ var requestLogin = function(state) {
 		'path': '/guardian/home.html',
 		'hostname': state.hostname,
 		'headers': {
-		    'Cookie': state.cookieJar.getCookiesSync('https://' + state.hostname + '/guardian/home.html')
+		    'Cookie': state.cookieJar.getCookieStringSync('https://' + state.hostname + '/guardian/home.html')
 		}
-		
+
 	}, state.loginData).then(function(response) {
 		setCookies(response.cookies, state.cookieJar, 'https://' + state.hostname + '/guardian/home.html');
 		return state;
@@ -153,7 +153,7 @@ var downloadXML = function(state) {
 		'path': '/guardian/studentdata.xml',
 		'hostname': state.hostname,
 		'headers': {
-	        'Cookie': state.cookieJar.getCookiesSync('https://' + state.hostname + '/guardian/studentdata.xml')   
+	        'Cookie': state.cookieJar.getCookieStringSync('https://' + state.hostname + '/guardian/studentdata.xml')
 		}
 	}).then(function(response) {
 		state.xml = response.body;
@@ -170,5 +170,5 @@ var convert = function(state) {
 };
 
 var handleError = function(error) {
-    console.log(error);  
+    console.log(error);
 };
