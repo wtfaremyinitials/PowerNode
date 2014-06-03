@@ -138,7 +138,7 @@ var requestLogin = function(state) {
 		'path': '/guardian/home.html',
 		'hostname': state.hostname,
 		'headers': {
-		    'Cookie': state.cookieJar.getCookieStringSync('https://' + state.hostname + '/guardian/home.html')
+		    'cookie': state.cookieJar.getCookieStringSync('https://' + state.hostname + '/guardian/home.html')
 		}
 
 	}, state.loginData).then(function(response) {
@@ -153,7 +153,7 @@ var downloadXML = function(state) {
 		'path': '/guardian/studentdata.xml',
 		'hostname': state.hostname,
 		'headers': {
-	        'Cookie': state.cookieJar.getCookieStringSync('https://' + state.hostname + '/guardian/studentdata.xml')
+	        'cookie': state.cookieJar.getCookieStringSync('https://' + state.hostname + '/guardian/studentdata.xml')
 		}
 	}).then(function(response) {
 		state.xml = response.body;
@@ -162,7 +162,7 @@ var downloadXML = function(state) {
 };
 
 var parseXML = function(state) {
-    
+
 };
 
 var convert = function(state) {
