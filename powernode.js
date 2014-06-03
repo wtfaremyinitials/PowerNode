@@ -11,7 +11,8 @@ var pscrypto = require('./lib/pscrypto');
 /*
 	Constants
 */
-var userAgent = 'powernode/0.0.0 (https://github.com/wtfaremyinitials/powernode)';
+var baseUserAgent = 'powernode/0.0.0 (https://github.com/wtfaremyinitials/powernode)';
+var userAgent = baseUserAgent;
 
 /*
 	Generic Methods
@@ -81,6 +82,10 @@ module.exports.getStudentData = function(hostname, username, password) {
 			.then(parseXML)
 			.then(convert)
 			.catch(handleError);
+};
+
+module.exports.setAppString = function(str) {
+    userAgent = baseUserAgent + 'on app (' + str + ')';
 };
 
 /*
