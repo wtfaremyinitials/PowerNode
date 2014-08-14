@@ -20,9 +20,11 @@ var checkSuccess = function() {
 };
 
 var dumpPageContent = function() {
-    this.echo(this.getPageContent());
+    this.download(baseURL + '/guardian/studentdata.xml', '/dev/stdout');
 };
 
 casper.start(baseURL + '/public/', fillForm);
 casper.then(checkSuccess);
-casper.thenOpen(baseURL + '/guardian/studentdata.xml', dumpPageContent);
+casper.then(dumpPageContent);
+
+casper.run()
