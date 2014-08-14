@@ -16,7 +16,7 @@ var fillForm = function() {
 var checkSuccess = function() {
     this.evaluateOrDie(function() {
         return /Grades and Attendance/.test(document.body.innerText)
-    });
+    }, 'BADPASS');
 };
 
 var dumpPageContent = function() {

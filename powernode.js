@@ -7,14 +7,11 @@ var scriptPath = __dirname + '/getdata.js';
 var getStudentData = function(hostname, username, password) {
     var deferred = Q.defer();
     subprocess.execFile(binPath, [scriptPath, hostname, username, password], function(err, stdout, stderr) {
-        var result;
-        try
-            result = JSON.parse(stdout);
-        catch(e)
-            deferred.reject(e);
-        if(result.error)
-            deferred.reject(result);
-        deferred.resolve(result);
+        if(stdout == 'BADPASS')
+            deferred.reject('BADPASS');
+        if(stdout == '')
+            deferred.reject('UNKNOWN');
+        deferred.resolve(stdout);
     });
     return deferred;
 };
