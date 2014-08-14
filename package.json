@@ -1,9 +1,10 @@
 {
-    "name": "PowerNode",
-    "version": "0.0.0",
-    "private": false,
-    "description": "A Node.JS module to interact with the PowerSchool web application.",
-    "dependencies": {
-        "casperjs": "1.1.0-beta3"
-    }
+  "name": "PowerNode",
+  "version": "0.0.0",
+  "private": false,
+  "description": "A Node.JS module to interact with the PowerSchool web application.",
+  "dependencies": {
+    "casperjs": "1.1.0-beta3",
+    "q": "^1.0.1"
+  }
 }
