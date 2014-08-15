@@ -4,7 +4,7 @@ var Q = require('q');
 var binPath    = __dirname + '/node_modules/casperjs/bin/casperjs'
 var scriptPath = __dirname + '/getdata.js';
 
-var getStudentData = function(hostname, username, password) {
+var getStudentData = function(hostname, username, password, cb) {
     var deferred = Q.defer();
     subprocess.execFile(binPath, [scriptPath, hostname, username, password], function(err, stdout, stderr) {
         if(stdout == 'BADPASS')
@@ -15,7 +15,7 @@ var getStudentData = function(hostname, username, password) {
             deferred.reject('UNKNOWN');
         deferred.resolve(stdout);
     });
-    return deferred.promise;
+    return deferred.promise.nodeify(cb);
 };
 
 module.exports.getStudentData = getStudentData;
