@@ -6,7 +6,7 @@ var binPath    = __dirname + '/node_modules/casperjs/bin/casperjs'
 var scriptPath = __dirname + '/getdata.js';
 
 var packagejson = JSON.parse(require('fs').readFileSync('package.json'));
-var userAgent = 'powernode/' + packagejson.version + ' (' + packagejson.repository + ')';
+var userAgent = 'powernode/' + packagejson.version + ' (' + packagejson.repository.url + ')';
 
 var getStudentData = function(hostname, username, password, cb) {
     var deferred = Q.defer();
@@ -68,7 +68,7 @@ var clean = function(xmlObj) {
 };
 
 var setUserAgent = function(newAgent) {
-    userAgent = 'powernode/' + packagejson.version + ' (' + packagejson.repository + ') on application ' + newAgent;
+    userAgent = 'powernode/' + packagejson.version + ' (' + packagejson.repository.url + ') on application ' + newAgent;
 };
 
 module.exports.getStudentData = getStudentData;
