@@ -5,6 +5,7 @@
   "description": "A Node.JS module to interact with the PowerSchool web application.",
   "dependencies": {
     "casperjs": "1.1.0-beta3",
-    "q": "^1.0.1"
+    "q": "^1.0.1",
+    "xml2js": "^0.4.4"
   }
 }
